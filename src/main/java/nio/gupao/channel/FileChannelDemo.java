@@ -1,7 +1,6 @@
 package nio.gupao.channel;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -14,10 +13,8 @@ import java.nio.file.Paths;
 public class FileChannelDemo {
 
     public static void main(String[] args) {
-
         /*创建文件，向文件中写入数据*/
         try {
-
             /*如果文件不存在，创建该文件,文件后缀是不是文本文件不重要*/
             File file = new File("f:/noi_utf8.data");
             if (!file.exists()) {
@@ -53,16 +50,12 @@ public class FileChannelDemo {
             fos.close();
             fc.close();
 
-        } catch (FileNotFoundException e) {
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println(e);
         }
 
-
         /*从刚才的文件中读取字符序列*/
         try {
-
             /*通过Path对象创建文件通道*/
             Path path = Paths.get("f:/noi_utf8.data");
             FileChannel fc = FileChannel.open(path);
@@ -79,13 +72,10 @@ public class FileChannelDemo {
             System.out.print(cb.toString());
             bb.clear();
 
-
             fc.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }
  

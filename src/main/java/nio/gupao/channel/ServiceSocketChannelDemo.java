@@ -71,13 +71,10 @@ public class ServiceSocketChannelDemo {
 
             /*服务器线程被中断后会退出*/
             try {
-
                 while (!Thread.currentThread().isInterrupted()) {
 
                     int n = selector.select();
-                    if (n == 0) {
-                        continue;
-                    }
+                    if (n == 0) { continue; }
 
                     Set<SelectionKey> keySet = selector.selectedKeys();
                     Iterator<SelectionKey> it = keySet.iterator();
@@ -106,7 +103,6 @@ public class ServiceSocketChannelDemo {
                                 System.out.println("accept from " + sc.getRemoteAddress());
                             }
 
-
                             /*（普通）通道感兴趣读事件且有数据可读*/
                             if (key.isReadable()) {
 
@@ -127,7 +123,6 @@ public class ServiceSocketChannelDemo {
                                 System.out.println(cb.array());
 
                                 readBuffer.rewind();
-
 
                                 /*准备好向客户端发送的信息*/
                                 /*先写入"echo:"，再写入收到的信息*/
@@ -194,8 +189,6 @@ public class ServiceSocketChannelDemo {
                     System.out.println("server close");
                 }
             }
-
         }
     }
-
 }
