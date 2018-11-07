@@ -21,6 +21,7 @@ public class Server {
             serverSocket = new ServerSocket(port);
 
             while (true) {
+                // 线程阻塞，accept()方法会acquireFD，锁住FD，有请求过来且accept后releaseFD()
                 Socket socket = serverSocket.accept();
                 new Thread(new ServerHandler(socket)).start();
             }
