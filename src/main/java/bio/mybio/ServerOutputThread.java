@@ -7,24 +7,24 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class ServerOutputThread extends Thread {
-	private Socket socket = null;
-	
-	public ServerOutputThread(Socket socket) {
-		this.socket = socket;
-	}
-	
-	@Override
-	public void run() {
-		try {
-			OutputStream os = socket.getOutputStream();
-			while(true) {
-				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-				
-				String line = br.readLine();
-				os.write(line.getBytes());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    private Socket socket = null;
+
+    public ServerOutputThread(Socket socket) {
+        this.socket = socket;
+    }
+
+    @Override
+    public void run() {
+        try {
+            OutputStream os = socket.getOutputStream();
+            while (true) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+                String line = br.readLine();
+                os.write(line.getBytes());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
