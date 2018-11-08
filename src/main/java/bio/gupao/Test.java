@@ -6,7 +6,7 @@ import java.util.Random;
 public class Test {
     //测试主方法
     public static void main(String[] args) throws InterruptedException {
-        //运行服务器
+        // 启动服务器端
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -21,6 +21,7 @@ public class Test {
 
         final char[] operators = {'+', '-', '*', '/'};
         final Random random = new Random(System.currentTimeMillis());
+        // 启动客户端
         new Thread(new Runnable() {
             @SuppressWarnings("static-access")
             public void run() {

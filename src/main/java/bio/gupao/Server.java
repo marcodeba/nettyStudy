@@ -13,10 +13,9 @@ public class Server {
         start(DEFAULT_PORT);
     }
 
-    public synchronized static void start(int port) throws IOException {
-        if (serverSocket != null) {
-            return;
-        }
+    private synchronized static void start(int port) throws IOException {
+        if (serverSocket != null) { return; }
+
         try {
             serverSocket = new ServerSocket(port);
 

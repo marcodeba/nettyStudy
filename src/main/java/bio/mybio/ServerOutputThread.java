@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class ServerOutputThread extends Thread {
-    private Socket socket = null;
+    private Socket socket;
 
     public ServerOutputThread(Socket socket) {
         this.socket = socket;
