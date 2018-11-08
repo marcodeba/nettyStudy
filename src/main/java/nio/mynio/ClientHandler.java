@@ -10,14 +10,14 @@ import java.util.Iterator;
 import java.util.Set;
 
 @SuppressWarnings("ALL")
-public class ClientHandle implements Runnable {
+public class ClientHandler implements Runnable {
     private String host;
     private int port;
     private Selector selector;
     private SocketChannel socketChannel;
     private volatile boolean started;
 
-    public ClientHandle(String ip, int port) {
+    public ClientHandler(String ip, int port) {
         this.host = ip;
         this.port = port;
         try {

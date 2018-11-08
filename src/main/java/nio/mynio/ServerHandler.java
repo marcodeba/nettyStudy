@@ -11,12 +11,12 @@ import java.util.Iterator;
 import java.util.Set;
 
 @SuppressWarnings("Duplicates")
-public class ServerHandle implements Runnable {
+public class ServerHandler implements Runnable {
     private Selector selector;
     private ServerSocketChannel serverChannel;
     private volatile boolean started;
 
-    public ServerHandle(int port) {
+    public ServerHandler(int port) {
         try {
             //创建选择器
             selector = Selector.open();
