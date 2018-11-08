@@ -9,12 +9,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
-/**
- * NIO客户端
- *
- * @author yangtao__anxpp.com
- * @version 1.0
- */
+@SuppressWarnings("ALL")
 public class ClientHandle implements Runnable {
     private String host;
     private int port;
@@ -56,7 +51,6 @@ public class ClientHandle implements Runnable {
                 //无论是否有读写事件发生，selector每隔1s被唤醒一次
                 selector.select(1000);
                 //阻塞,只有当至少一个注册的事件发生的时候才会继续.
-//              selector.select();
                 Set<SelectionKey> keys = selector.selectedKeys();
                 Iterator<SelectionKey> it = keys.iterator();
                 SelectionKey key = null;

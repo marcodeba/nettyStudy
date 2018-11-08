@@ -10,6 +10,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
+@SuppressWarnings("Duplicates")
 public class ServerHandle implements Runnable {
     private Selector selector;
     private ServerSocketChannel serverChannel;
@@ -47,12 +48,11 @@ public class ServerHandle implements Runnable {
                 //无论是否有读写事件发生，selector每隔1s被唤醒一次
                 selector.select(1000);
                 //阻塞,只有当至少一个注册的事件发生的时候才会继续.
-//              selector.select();
                 Set<SelectionKey> keys = selector.selectedKeys();
                 Iterator<SelectionKey> it = keys.iterator();
-                SelectionKey key = null;
+                //SelectionKey key;
                 while (it.hasNext()) {
-                    key = it.next();
+                    SelectionKey key = it.next();
                     it.remove();
                     try {
                         handleInput(key);
@@ -108,15 +108,8 @@ public class ServerHandle implements Runnable {
                     buffer.get(bytes);
                     String expression = new String(bytes, "UTF-8");
                     System.out.println("服务器收到消息：" + expression);
-                    //处理数据
-                    String result = null;
-                    try {
-                        result = Calculate.cal(expression);
-                    } catch (Exception e) {
-                        result = "计算错误：" + e.getMessage();
-                    }
                     //发送应答消息
-                    doWrite(sc, result);
+                    doWrite(sc, expression);
                 }
                 //没有读取到字节 忽略
 //              else if(readBytes==0);
