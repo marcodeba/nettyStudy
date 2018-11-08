@@ -15,9 +15,9 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-
 /*服务器端，:接收客户端发送过来的数据并显示，
  *服务器把上接收到的数据加上"echo from service:"再发送回去*/
+@SuppressWarnings("ALL")
 public class ServiceSocketChannelDemo {
 
     public static void main(String[] args) throws InterruptedException, IOException {
@@ -29,7 +29,6 @@ public class ServiceSocketChannelDemo {
     }
 
     public static class TCPEchoServer implements Runnable {
-
         /*服务器地址*/
         private InetSocketAddress localAddress;
 
@@ -37,15 +36,10 @@ public class ServiceSocketChannelDemo {
             this.localAddress = new InetSocketAddress(port);
         }
 
-
-        @Override
         public void run() {
-
             Charset utf8 = Charset.forName("UTF-8");
-
             ServerSocketChannel ssc = null;
             Selector selector = null;
-
             Random rnd = new Random();
 
             try {
@@ -72,16 +66,16 @@ public class ServiceSocketChannelDemo {
             /*服务器线程被中断后会退出*/
             try {
                 while (!Thread.currentThread().isInterrupted()) {
-
                     int n = selector.select();
-                    if (n == 0) { continue; }
+                    if (n == 0) {
+                        continue;
+                    }
 
                     Set<SelectionKey> keySet = selector.selectedKeys();
                     Iterator<SelectionKey> it = keySet.iterator();
                     SelectionKey key = null;
 
                     while (it.hasNext()) {
-
                         key = it.next();
                         /*防止下次select方法返回已处理过的通道*/
                         it.remove();
@@ -90,7 +84,6 @@ public class ServiceSocketChannelDemo {
                         try {
                             /*ssc通道只能对链接事件感兴趣*/
                             if (key.isAcceptable()) {
-
                                 /*accept方法会返回一个普通通道，
                                      每个通道在内核中都对应一个socket缓冲区*/
                                 SocketChannel sc = ssc.accept();
@@ -105,7 +98,6 @@ public class ServiceSocketChannelDemo {
 
                             /*（普通）通道感兴趣读事件且有数据可读*/
                             if (key.isReadable()) {
-
                                 /*通过SelectionKey获取通道对应的缓冲区*/
                                 Buffers buffers = (Buffers) key.attachment();
                                 ByteBuffer readBuffer = buffers.getReadBuffer();
@@ -130,15 +122,12 @@ public class ServiceSocketChannelDemo {
                                 writeBuffer.put(readBuffer);
 
                                 readBuffer.clear();
-
                                 /*设置通道写事件*/
                                 key.interestOps(key.interestOps() | SelectionKey.OP_WRITE);
-
                             }
 
                             /*通道感兴趣写事件且底层缓冲区有空闲*/
                             if (key.isWritable()) {
-
                                 Buffers buffers = (Buffers) key.attachment();
 
                                 ByteBuffer writeBuffer = buffers.gerWriteBuffer();
@@ -162,7 +151,6 @@ public class ServiceSocketChannelDemo {
                                     /*取消通道的写事件*/
                                     key.interestOps(key.interestOps() & (~SelectionKey.OP_WRITE));
                                 }
-
                             }
                         } catch (IOException e) {
                             System.out.println("service encounter client error");
@@ -170,12 +158,9 @@ public class ServiceSocketChannelDemo {
                             key.cancel();
                             key.channel().close();
                         }
-
                     }
-
                     Thread.sleep(rnd.nextInt(500));
                 }
-
             } catch (InterruptedException e) {
                 System.out.println("serverThread is interrupted");
             } catch (IOException e1) {

@@ -1,6 +1,7 @@
 package nio.gupao.channel;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -10,6 +11,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+@SuppressWarnings("Since15")
 public class FileChannelDemo {
 
     public static void main(String[] args) {
@@ -50,7 +52,9 @@ public class FileChannelDemo {
             fos.close();
             fc.close();
 
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+
+        } catch (IOException e) {
             System.out.println(e);
         }
 
@@ -71,7 +75,6 @@ public class FileChannelDemo {
             CharBuffer cb = utf8.decode(bb);
             System.out.print(cb.toString());
             bb.clear();
-
             fc.close();
         } catch (IOException e) {
             e.printStackTrace();

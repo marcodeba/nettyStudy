@@ -1,5 +1,6 @@
 package nio.gupao.channel;
 
+
 import nio.gupao.buffer.Buffers;
 
 import java.io.IOException;
@@ -53,16 +54,12 @@ public class ClientSocketChannelDemo {
             this.remoteAddress = remoteAddress;
         }
 
-        @Override
         public void run() {
-
             /*创建解码器*/
             Charset utf8 = Charset.forName("UTF-8");
-
             Selector selector;
 
             try {
-
                 /*创建TCP通道*/
                 SocketChannel sc = SocketChannel.open();
 
@@ -87,7 +84,6 @@ public class ClientSocketChannelDemo {
                 }
 
                 System.out.println(name + " " + "finished connection");
-
             } catch (IOException e) {
                 System.out.println("client connect failed");
                 return;
@@ -95,10 +91,8 @@ public class ClientSocketChannelDemo {
 
             /*与服务器断开或线程被中断则结束线程*/
             try {
-
                 int i = 1;
                 while (!Thread.currentThread().isInterrupted()) {
-
                     /*阻塞等待*/
                     selector.select();
 
@@ -108,7 +102,6 @@ public class ClientSocketChannelDemo {
 
                     /*遍历每个已就绪的通道，处理这个通道已就绪的事件*/
                     while (it.hasNext()) {
-
                         SelectionKey key = it.next();
                         /*防止下次select方法返回已处理过的通道*/
                         it.remove();
@@ -146,7 +139,6 @@ public class ClientSocketChannelDemo {
 
                     Thread.sleep(1000 + rnd.nextInt(1000));
                 }
-
             } catch (InterruptedException e) {
                 System.out.println(name + " is interrupted");
             } catch (IOException e) {
@@ -161,6 +153,5 @@ public class ClientSocketChannelDemo {
                 }
             }
         }
-
     }
 }
