@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
-public class ServerInputThread extends Thread {
+public class ServerInputThread implements Runnable {
     private Socket socket = null;
 
     public ServerInputThread(Socket socket) {
         this.socket = socket;
     }
 
-    @Override
     public void run() {
         try {
             InputStream is = socket.getInputStream();

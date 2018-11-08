@@ -6,14 +6,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
-public class ClientOutputThread extends Thread {
+public class ClientOutputThread implements Runnable {//extends Thread {
     private Socket socket = null;
 
     public ClientOutputThread(Socket socket) {
         this.socket = socket;
     }
 
-    @Override
     public void run() {
         try {
             OutputStream os = socket.getOutputStream();

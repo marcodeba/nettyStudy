@@ -9,8 +9,8 @@ public class MainServer {
         ServerSocket serverSocket = new ServerSocket(8888);
         while (true) {
             Socket socket = serverSocket.accept();
-            new ServerInputThread(socket).start();
-            new ServerOutputThread(socket).start();
+            new Thread(new ServerInputThread(socket)).start();
+            new Thread(new ServerOutputThread(socket)).start();
         }
     }
 }
