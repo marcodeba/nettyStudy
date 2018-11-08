@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class ClientOutputThread implements Runnable {//extends Thread {
-    private Socket socket = null;
+    private Socket socket;
 
     public ClientOutputThread(Socket socket) {
         this.socket = socket;
@@ -26,6 +26,14 @@ public class ClientOutputThread implements Runnable {//extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                socket = null;
+            }
             if (os != null) {
                 try {
                     os.close();

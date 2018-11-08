@@ -24,6 +24,15 @@ public class ClientInputThread implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                socket = null;
+            }
+
             if (is != null) {
                 try {
                     is.close();

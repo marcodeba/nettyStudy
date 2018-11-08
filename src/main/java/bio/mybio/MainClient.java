@@ -5,7 +5,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class MainClient {
-
     private static final int DEFAULT_PORT = 8888;
     private static final String DEFAULT_IP = "localhost";
 
