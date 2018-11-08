@@ -21,8 +21,6 @@ public class NettyServer {
     private static final EventLoopGroup workGroup = new NioEventLoopGroup(BIZTHREADSIZE);
 
     public static void start() throws Exception {
-
-
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossGroup, workGroup)
                 .channel(NioServerSocketChannel.class)
@@ -39,12 +37,10 @@ public class NettyServer {
                     }
                 });
 
-
         ChannelFuture channelFuture = serverBootstrap.bind(IP, port).sync();
 
         channelFuture.channel().closeFuture().sync();
         System.out.println("server start");
-
     }
 
     protected static void shutdown() {

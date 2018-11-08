@@ -44,13 +44,10 @@ public class NettyClient implements Runnable {
                 f.channel().writeAndFlush("hello service !" + Thread.currentThread().getName() + ":---->" + i);
                 f.channel().closeFuture().sync();
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             group.shutdownGracefully();
         }
-
     }
 }
