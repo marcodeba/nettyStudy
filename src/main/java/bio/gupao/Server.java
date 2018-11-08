@@ -22,6 +22,7 @@ public class Server {
             while (true) {
                 // 线程阻塞，accept()方法会acquireFD，锁住FD，有请求过来且accept后releaseFD()
                 Socket socket = serverSocket.accept();
+                System.out.println("new connection accepted " + socket.getInetAddress() + ":" + socket.getPort());
                 new Thread(new ServerHandler(socket)).start();
             }
         } catch (IOException e) {

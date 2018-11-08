@@ -22,16 +22,14 @@ public class ServerHandler implements Runnable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            String expression = "";
-            String result = "";
+            String expression;
+            String result;
 
             while (true) {
-                if ((expression = in.readLine()) == null) {
-                    break;
-                }
+                if ((expression = in.readLine()) == null) { break; }
+
                 System.out.println("Server has accept " + expression);
                 result = Calculate.cal(expression);
-
                 out.println(result);
             }
         } catch (IOException e) {
@@ -54,8 +52,8 @@ public class ServerHandler implements Runnable {
                     socket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    socket = null;
                 }
+                socket = null;
             }
         }
     }
