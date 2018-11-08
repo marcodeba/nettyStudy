@@ -12,8 +12,9 @@ public class ServerInputThread implements Runnable {
     }
 
     public void run() {
+        InputStream is = null;
         try {
-            InputStream is = socket.getInputStream();
+            is = socket.getInputStream();
             while (true) {
                 byte[] buffer = new byte[1024];
                 int length = is.read(buffer);
@@ -22,6 +23,17 @@ public class ServerInputThread implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (is != null) {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                is = null;
+            }
         }
     }
 }

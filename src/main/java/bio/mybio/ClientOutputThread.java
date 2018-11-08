@@ -14,8 +14,9 @@ public class ClientOutputThread implements Runnable {//extends Thread {
     }
 
     public void run() {
+        OutputStream os = null;
         try {
-            OutputStream os = socket.getOutputStream();
+            os = socket.getOutputStream();
             while (true) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -24,6 +25,15 @@ public class ClientOutputThread implements Runnable {//extends Thread {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            os = null;
         }
     }
 }
