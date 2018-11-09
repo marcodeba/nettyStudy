@@ -13,7 +13,7 @@ import java.util.Set;
 @SuppressWarnings("Duplicates")
 public class ServerHandler implements Runnable {
     private Selector selector;
-    private ServerSocketChannel serverChannel;
+    private ServerSocketChannel serverSocketChannel;
     private volatile boolean started;
 
     public ServerHandler(int port) {
@@ -21,13 +21,13 @@ public class ServerHandler implements Runnable {
             //创建选择器
             selector = Selector.open();
             //打开监听通道
-            serverChannel = ServerSocketChannel.open();
-            //如果为 true，则此通道将被置于阻塞模式；如果为 false，则此通道将被置于非阻塞模式
-            serverChannel.configureBlocking(false);//开启非阻塞模式
+            serverSocketChannel = ServerSocketChannel.open();
+            //开启非阻塞模式
+            serverSocketChannel.configureBlocking(false);
             //绑定端口 backlog设为1024
-            serverChannel.socket().bind(new InetSocketAddress(port), 1024);
-            //监听客户端连接请求
-            serverChannel.register(selector, SelectionKey.OP_ACCEPT);
+            serverSocketChannel.socket().bind(new InetSocketAddress(port), 1024);
+            //监听客户端连接请求，将ServerSocketChannel注册到Reactor线程中的Selector上，监听ACCEPT事件
+            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             //标记服务器已开启
             started = true;
             System.out.println("服务器已启动，端口号：" + port);
@@ -42,16 +42,17 @@ public class ServerHandler implements Runnable {
     }
 
     public void run() {
-        //循环遍历selector
+        //Selector轮询准备就绪的key
         while (started) {
             try {
-                //无论是否有读写事件发生，selector每隔1s被唤醒一次
+                // 阻塞等待
                 selector.select(1000);
                 //阻塞,只有当至少一个注册的事件发生的时候才会继续.
                 Set<SelectionKey> keys = selector.selectedKeys();
                 Iterator<SelectionKey> it = keys.iterator();
                 //SelectionKey key;
                 while (it.hasNext()) {
+                    // 通过SelectionKey可以获取就绪Channel的集合，进行后续的I/O操作
                     SelectionKey key = it.next();
                     it.remove();
                     try {
@@ -80,7 +81,7 @@ public class ServerHandler implements Runnable {
 
     private void handleInput(SelectionKey key) throws IOException {
         if (key.isValid()) {
-            //处理新接入的请求消息
+            //处理新接入的请求消息，Selector监听到新的客户端接入，处理新的接入请求完成TCP三次握手
             if (key.isAcceptable()) {
                 ServerSocketChannel ssc = (ServerSocketChannel) key.channel();
                 //通过ServerSocketChannel的accept创建SocketChannel实例
@@ -93,6 +94,7 @@ public class ServerHandler implements Runnable {
             }
             //读消息
             if (key.isReadable()) {
+                // 通过SelectionKey可以获取就绪Channel的集合，进行后续的I/O操作
                 SocketChannel sc = (SocketChannel) key.channel();
                 //创建ByteBuffer，并开辟一个1M的缓冲区
                 ByteBuffer buffer = ByteBuffer.allocate(1024);
@@ -110,11 +112,8 @@ public class ServerHandler implements Runnable {
                     System.out.println("服务器收到消息：" + expression);
                     //发送应答消息
                     doWrite(sc, expression);
-                }
-                //没有读取到字节 忽略
-//              else if(readBytes==0);
-                //链路已经关闭，释放资源
-                else if (readBytes < 0) {
+                } else if (readBytes < 0) {
+                    //链路已经关闭，释放资源
                     key.cancel();
                     sc.close();
                 }
@@ -123,9 +122,9 @@ public class ServerHandler implements Runnable {
     }
 
     //异步发送应答消息
-    private void doWrite(SocketChannel channel, String response) throws IOException {
+    private void doWrite(SocketChannel channel, String expression) throws IOException {
         //将消息编码为字节数组
-        byte[] bytes = response.getBytes();
+        byte[] bytes = expression.getBytes();
         //根据数组容量创建ByteBuffer
         ByteBuffer writeBuffer = ByteBuffer.allocate(bytes.length);
         //将字节数组复制到缓冲区
@@ -134,6 +133,5 @@ public class ServerHandler implements Runnable {
         writeBuffer.flip();
         //发送缓冲区的字节数组
         channel.write(writeBuffer);
-        //****此处不含处理“写半包”的代码
     }
 }

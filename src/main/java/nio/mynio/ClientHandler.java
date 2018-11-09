@@ -82,6 +82,11 @@ public class ClientHandler implements Runnable {
             }
     }
 
+    private void doConnect() throws IOException {
+        if (socketChannel.connect(new InetSocketAddress(host, port))) ;
+        else socketChannel.register(selector, SelectionKey.OP_CONNECT);
+    }
+
     private void handleInput(SelectionKey key) throws IOException {
         if (key.isValid()) {
             SocketChannel sc = (SocketChannel) key.channel();
@@ -105,16 +110,18 @@ public class ClientHandler implements Runnable {
                     buffer.get(bytes);
                     String result = new String(bytes, "UTF-8");
                     System.out.println("客户端收到消息：" + result);
-                }
-                //没有读取到字节 忽略
-//              else if(readBytes==0);
-                //链路已经关闭，释放资源
-                else if (readBytes < 0) {
+                } else if (readBytes < 0) {
+                    //链路已经关闭，释放资源
                     key.cancel();
                     sc.close();
                 }
             }
         }
+    }
+
+    public void sendMsg(String msg) throws Exception {
+        socketChannel.register(selector, SelectionKey.OP_READ);
+        doWrite(socketChannel, msg);
     }
 
     //异步发送消息
@@ -130,15 +137,5 @@ public class ClientHandler implements Runnable {
         //发送缓冲区的字节数组
         channel.write(writeBuffer);
         //****此处不含处理“写半包”的代码
-    }
-
-    private void doConnect() throws IOException {
-        if (socketChannel.connect(new InetSocketAddress(host, port))) ;
-        else socketChannel.register(selector, SelectionKey.OP_CONNECT);
-    }
-
-    public void sendMsg(String msg) throws Exception {
-        socketChannel.register(selector, SelectionKey.OP_READ);
-        doWrite(socketChannel, msg);
     }
 }
