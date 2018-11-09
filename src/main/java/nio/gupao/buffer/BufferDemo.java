@@ -15,7 +15,8 @@ public class BufferDemo {
 
         /*对获取utf8的编解码器*/
         Charset utf8 = Charset.forName("UTF-8");
-        CharBuffer charBuffer = utf8.decode(byteBuffer);/*对bytebuffer中的内容解码*/
+        /*对bytebuffer中的内容解码*/
+        CharBuffer charBuffer = utf8.decode(byteBuffer);
 
         /*array()返回的就是内部的数组引用，编码以后的有效长度是0~limit*/
         char[] charArr = Arrays.copyOf(charBuffer.array(), charBuffer.limit());

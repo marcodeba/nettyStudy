@@ -62,19 +62,14 @@ public class ClientSocketChannelDemo {
             try {
                 /*创建TCP通道*/
                 SocketChannel sc = SocketChannel.open();
-
                 /*设置通道为非阻塞*/
                 sc.configureBlocking(false);
-
                 /*创建选择器*/
                 selector = Selector.open();
-
                 /*注册感兴趣事件*/
                 int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
-
                 /*向选择器注册通道*/
                 sc.register(selector, interestSet, new Buffers(256, 256));
-
                 /*向服务器发起连接,一个通道代表一条tcp链接*/
                 sc.connect(remoteAddress);
 
@@ -82,7 +77,6 @@ public class ClientSocketChannelDemo {
                 while (!sc.finishConnect()) {
                     ;
                 }
-
                 System.out.println(name + " " + "finished connection");
             } catch (IOException e) {
                 System.out.println("client connect failed");

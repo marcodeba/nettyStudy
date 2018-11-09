@@ -10,26 +10,26 @@ public class CopyFile {
         String infile = "CopyFile.java";
         String outfile = "CopyFile.txt";
 
-        FileInputStream fin = new FileInputStream(infile);
-        FileOutputStream fout = new FileOutputStream(outfile);
+        FileInputStream fIn = new FileInputStream(infile);
+        FileOutputStream fOut = new FileOutputStream(outfile);
 
-        FileChannel fcin = fin.getChannel();
-        FileChannel fcout = fout.getChannel();
+        FileChannel fcIn = fIn.getChannel();
+        FileChannel fcOut = fOut.getChannel();
 
         ByteBuffer buffer = ByteBuffer.allocate(1024);
 
-        int bytesRead = fcin.read(buffer);
+        int bytesRead = fcIn.read(buffer);
         while (-1 != bytesRead) {
             buffer.flip();
             while (buffer.hasRemaining()) {
-                fcout.write(buffer);
+                fcOut.write(buffer);
             }
             buffer.clear();
-            bytesRead = fcin.read(buffer);
+            bytesRead = fcIn.read(buffer);
         }
-        fcin.close();
-        fcout.close();
-        fin.close();
-        fout.close();
+        fcIn.close();
+        fcOut.close();
+        fIn.close();
+        fOut.close();
     }
 }

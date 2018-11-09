@@ -31,7 +31,6 @@ public class ServiceSocketChannelDemo {
     public static class TCPEchoServer implements Runnable {
         /*服务器地址*/
         private InetSocketAddress localAddress;
-
         public TCPEchoServer(int port) throws IOException {
             this.localAddress = new InetSocketAddress(port);
         }
@@ -45,17 +44,13 @@ public class ServiceSocketChannelDemo {
             try {
                 /*创建选择器*/
                 selector = Selector.open();
-
                 /*创建服务器通道*/
                 ssc = ServerSocketChannel.open();
                 ssc.configureBlocking(false);
-
                 /*设置监听服务器的端口，设置最大连接缓冲数为100*/
                 ssc.bind(localAddress, 100);
-
                 /*服务器通道只能对tcp链接事件感兴趣*/
                 ssc.register(selector, SelectionKey.OP_ACCEPT);
-
             } catch (IOException e1) {
                 System.out.println("server start failed");
                 return;
@@ -67,9 +62,7 @@ public class ServiceSocketChannelDemo {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     int n = selector.select();
-                    if (n == 0) {
-                        continue;
-                    }
+                    if (n == 0) { continue; }
 
                     Set<SelectionKey> keySet = selector.selectedKeys();
                     Iterator<SelectionKey> it = keySet.iterator();
@@ -129,12 +122,10 @@ public class ServiceSocketChannelDemo {
                             /*通道感兴趣写事件且底层缓冲区有空闲*/
                             if (key.isWritable()) {
                                 Buffers buffers = (Buffers) key.attachment();
-
                                 ByteBuffer writeBuffer = buffers.gerWriteBuffer();
                                 writeBuffer.flip();
 
                                 SocketChannel sc = (SocketChannel) key.channel();
-
                                 int len = 0;
                                 while (writeBuffer.hasRemaining()) {
                                     len = sc.write(writeBuffer);
