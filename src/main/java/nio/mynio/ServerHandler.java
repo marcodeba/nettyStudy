@@ -10,12 +10,24 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * Reactor由两部分组成：1. Acceptor（负责处理client的连接请求）；2.Selector负责事件派发
+ * Reactor组件：
+ * 1. Acceptor：接收client连接，建立对应client的Handler，并向Reactor注册此Handler
+ * 2. Handler：业务实现处理类
+ * 3. Selector：Reactor事件派发者
+ */
+
 @SuppressWarnings("Duplicates")
 public class ServerHandler implements Runnable {
     private Selector selector;
     private ServerSocketChannel serverSocketChannel;
     private volatile boolean started;
 
+    /**
+     * 注册一个Acceptor事件处理器到Reactor中，Acceptor事件处理器所关注的事件是ACCEPT事件，
+     * 这样Reactor会监听客户端向服务器端发起的连接请求事件(ACCEPT事件)
+     */
     public ServerHandler(int port) {
         try {
             //创建选择器
@@ -51,9 +63,7 @@ public class ServerHandler implements Runnable {
                 //阻塞,只有当至少一个注册的事件发生的时候才会继续.
                 Set<SelectionKey> keys = selector.selectedKeys();
                 Iterator<SelectionKey> it = keys.iterator();
-                //SelectionKey key;
                 while (it.hasNext()) {
-                    // 通过SelectionKey可以获取对应的事件
                     SelectionKey key = it.next();
                     it.remove();
                     try {
@@ -82,18 +92,20 @@ public class ServerHandler implements Runnable {
 
     private void handleInput(SelectionKey key) throws IOException {
         if (key.isValid()) {
-            //处理新接入的请求消息，Selector监听到新的客户端接入，处理新的接入请求完成TCP三次握手
+            /**
+             * Acceptor处理器通过accept()方法得到与这个客户端对应的连接(SocketChannel)，
+             * 然后将该连接所关注的READ事件以及对应的READ事件处理器注册到Reactor中，
+             * 这样一来Reactor就会监听该连接的READ事件了
+             */
             if (key.isAcceptable()) {
-                ServerSocketChannel ssc = (ServerSocketChannel) key.channel();
-                //通过ServerSocketChannel的accept创建SocketChannel实例
-                //完成该操作意味着完成TCP三次握手，TCP物理链路正式建立
-                SocketChannel sc = ssc.accept();
-                //设置为非阻塞的
+                // Acceptor处理器通过accept()方法得到与这个客户端对应的连接(SocketChannel)
+                SocketChannel sc = serverSocketChannel.accept();
+                // 设置为非阻塞的
                 sc.configureBlocking(false);
-                //注册为读
+                // 将该连接所关注的READ事件以及对应的READ事件处理器注册到Reactor中，这样一来Reactor就会监听该连接的READ事件了
                 sc.register(selector, SelectionKey.OP_READ);
             }
-            //读消息
+            // 当Reactor监听到有读或者写事件发生时，将相关的事件派发给对应的处理器进行处理
             if (key.isReadable()) {
                 // 通过SelectionKey可以获取就绪Channel的集合，进行后续的I/O操作
                 SocketChannel sc = (SocketChannel) key.channel();

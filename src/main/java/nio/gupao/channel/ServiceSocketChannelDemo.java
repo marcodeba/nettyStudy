@@ -31,13 +31,14 @@ public class ServiceSocketChannelDemo {
     public static class TCPEchoServer implements Runnable {
         /*服务器地址*/
         private InetSocketAddress localAddress;
+
         public TCPEchoServer(int port) throws IOException {
             this.localAddress = new InetSocketAddress(port);
         }
 
         public void run() {
             Charset utf8 = Charset.forName("UTF-8");
-            ServerSocketChannel ssc = null;
+            ServerSocketChannel serverSocketChannel = null;
             Selector selector = null;
             Random rnd = new Random();
 
@@ -45,12 +46,12 @@ public class ServiceSocketChannelDemo {
                 /*创建选择器*/
                 selector = Selector.open();
                 /*创建服务器通道*/
-                ssc = ServerSocketChannel.open();
-                ssc.configureBlocking(false);
+                serverSocketChannel = ServerSocketChannel.open();
+                serverSocketChannel.configureBlocking(false);
                 /*设置监听服务器的端口，设置最大连接缓冲数为100*/
-                ssc.bind(localAddress, 100);
+                serverSocketChannel.bind(localAddress, 100);
                 /*服务器通道只能对tcp链接事件感兴趣*/
-                ssc.register(selector, SelectionKey.OP_ACCEPT);
+                serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             } catch (IOException e1) {
                 System.out.println("server start failed");
                 return;
@@ -62,7 +63,9 @@ public class ServiceSocketChannelDemo {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     int n = selector.select();
-                    if (n == 0) { continue; }
+                    if (n == 0) {
+                        continue;
+                    }
 
                     Set<SelectionKey> keySet = selector.selectedKeys();
                     Iterator<SelectionKey> it = keySet.iterator();
@@ -79,14 +82,13 @@ public class ServiceSocketChannelDemo {
                             if (key.isAcceptable()) {
                                 /*accept方法会返回一个普通通道，
                                      每个通道在内核中都对应一个socket缓冲区*/
-                                SocketChannel sc = ssc.accept();
-                                sc.configureBlocking(false);
-
+                                //ServerSocketChannel ssc = (ServerSocketChannel) key.channel();
+                                SocketChannel socketChannel = serverSocketChannel.accept();
+                                socketChannel.configureBlocking(false);
                                 /*向选择器注册这个通道和普通通道感兴趣的事件，同时提供这个新通道相关的缓冲区*/
-                                int interestSet = SelectionKey.OP_READ;
-                                sc.register(selector, interestSet, new Buffers(256, 256));
+                                socketChannel.register(selector, SelectionKey.OP_READ, new Buffers(256, 256));
 
-                                System.out.println("accept from " + sc.getRemoteAddress());
+                                System.out.println("accept from " + socketChannel.getRemoteAddress());
                             }
 
                             /*（普通）通道感兴趣读事件且有数据可读*/
@@ -95,10 +97,8 @@ public class ServiceSocketChannelDemo {
                                 Buffers buffers = (Buffers) key.attachment();
                                 ByteBuffer readBuffer = buffers.getReadBuffer();
                                 ByteBuffer writeBuffer = buffers.gerWriteBuffer();
-
                                 /*通过SelectionKey获取对应的通道*/
                                 SocketChannel sc = (SocketChannel) key.channel();
-
                                 /*从底层socket读缓冲区中读入数据*/
                                 sc.read(readBuffer);
                                 readBuffer.flip();
@@ -136,7 +136,6 @@ public class ServiceSocketChannelDemo {
                                 }
 
                                 writeBuffer.compact();
-
                                 /*说明数据全部写入到底层的socket写缓冲区*/
                                 if (len != 0) {
                                     /*取消通道的写事件*/

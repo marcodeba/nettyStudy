@@ -3,7 +3,7 @@ package netty.mynetty;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class HelloWorldClientHandler extends ChannelInboundHandlerAdapter{
+public class HelloWorldClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -12,9 +12,8 @@ public class HelloWorldClientHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        System.out.println("HelloWorldClientHandler read Message:"+msg);
+        System.out.println("HelloWorldClientHandler read Message:" + msg);
     }
-
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
