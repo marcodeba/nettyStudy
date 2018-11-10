@@ -24,9 +24,10 @@ public class ServerHandler implements Runnable {
             serverSocketChannel = ServerSocketChannel.open();
             //开启非阻塞模式
             serverSocketChannel.configureBlocking(false);
-            //绑定端口 backlog设为1024
+            //绑定ip和端口 backlog设为1024
             serverSocketChannel.socket().bind(new InetSocketAddress(port), 1024);
             //监听客户端连接请求，将ServerSocketChannel注册到Reactor线程中的Selector上，监听ACCEPT事件
+            // selector注册的单位是事件
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             //标记服务器已开启
             started = true;
@@ -52,7 +53,7 @@ public class ServerHandler implements Runnable {
                 Iterator<SelectionKey> it = keys.iterator();
                 //SelectionKey key;
                 while (it.hasNext()) {
-                    // 通过SelectionKey可以获取就绪Channel的集合，进行后续的I/O操作
+                    // 通过SelectionKey可以获取对应的事件
                     SelectionKey key = it.next();
                     it.remove();
                     try {

@@ -20,6 +20,7 @@ public class Server {
             serverSocket = new ServerSocket(port);
 
             while (true) {
+                // 在调用ServerSocket.accept()方法时，会一直阻塞到有客户端连接才会返回
                 // 线程阻塞，accept()方法会acquireFD，锁住FD，有请求过来且accept后releaseFD()
                 Socket socket = serverSocket.accept();
                 System.out.println("new connection accepted " + socket.getInetAddress() + ":" + socket.getPort());
