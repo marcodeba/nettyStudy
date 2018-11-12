@@ -32,16 +32,13 @@ public class ClientSocketChannelDemo {
         tc.start();
 
         Thread.sleep(5000);
-
         /*结束客户端a*/
         ta.interrupt();
-
         /*开始客户端d*/
         td.start();
     }
 
     public static class TCPEchoClient implements Runnable {
-
         /*客户端线程名*/
         private String name;
         private Random rnd = new Random();

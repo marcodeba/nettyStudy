@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 
 @SuppressWarnings("Since15")
 public class FileChannelDemo {
-
     public static void main(String[] args) {
         /*创建文件，向文件中写入数据*/
         try {
@@ -29,19 +28,14 @@ public class FileChannelDemo {
 
             /*创建ByteBuffer对象， position = 0, limit = 64*/
             ByteBuffer bb = ByteBuffer.allocate(64);
-
             /*向ByteBuffer中放入字符串UTF-8的字节, position = 17, limit = 64*/
             bb.put("Hello,World 123 \n".getBytes("UTF-8"));
-
             /*flip方法  position = 0, limit = 17*/
             bb.flip();
-
             /*write方法使得ByteBuffer的position到 limit中的元素写入通道中*/
             fc.write(bb);
-
             /*clear方法使得position = 0， limit = 64*/
             bb.clear();
-
             /*下面的代码同理*/
             bb.put("你好，世界 456".getBytes("UTF-8"));
             bb.flip();
@@ -51,7 +45,6 @@ public class FileChannelDemo {
 
             fos.close();
             fc.close();
-
         } catch (FileNotFoundException e) {
 
         } catch (IOException e) {
@@ -63,15 +56,13 @@ public class FileChannelDemo {
             /*通过Path对象创建文件通道*/
             Path path = Paths.get("f:/noi_utf8.data");
             FileChannel fc = FileChannel.open(path);
-
             ByteBuffer bb = ByteBuffer.allocate((int) fc.size() + 1);
-
             Charset utf8 = Charset.forName("UTF-8");
 
             /*阻塞模式，读取完成才能返回*/
             fc.read(bb);
-
             bb.flip();
+
             CharBuffer cb = utf8.decode(bb);
             System.out.print(cb.toString());
             bb.clear();

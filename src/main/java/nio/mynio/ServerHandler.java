@@ -17,7 +17,6 @@ import java.util.Set;
  * 2. Handler：业务实现处理类
  * 3. Selector：Reactor事件派发者
  */
-
 @SuppressWarnings("Duplicates")
 public class ServerHandler implements Runnable {
     private Selector selector;
@@ -43,7 +42,7 @@ public class ServerHandler implements Runnable {
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             //标记服务器已开启
             started = true;
-            System.out.println("服务器已启动，端口号：" + port);
+            System.out.println("服务器已启动，" + new InetSocketAddress(port));
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -59,7 +58,11 @@ public class ServerHandler implements Runnable {
         while (started) {
             try {
                 // 阻塞等待
-                selector.select(1000);
+                int n = selector.select();
+                if (n == 0) {
+                    continue;
+                }
+
                 //阻塞,只有当至少一个注册的事件发生的时候才会继续.
                 Set<SelectionKey> keys = selector.selectedKeys();
                 Iterator<SelectionKey> it = keys.iterator();

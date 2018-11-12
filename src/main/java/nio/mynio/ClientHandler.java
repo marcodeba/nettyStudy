@@ -49,7 +49,10 @@ public class ClientHandler implements Runnable {
         while (started) {
             try {
                 //无论是否有读写事件发生，selector每隔1s被唤醒一次
-                selector.select(1000);
+                int n = selector.select();
+                if (n == 0) {
+                    continue;
+                }
                 //阻塞,只有当至少一个注册的事件发生的时候才会继续.
                 Set<SelectionKey> keys = selector.selectedKeys();
                 Iterator<SelectionKey> it = keys.iterator();
