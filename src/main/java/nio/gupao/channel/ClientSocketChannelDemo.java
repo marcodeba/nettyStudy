@@ -85,7 +85,10 @@ public class ClientSocketChannelDemo {
                 int i = 1;
                 while (!Thread.currentThread().isInterrupted()) {
                     /*阻塞等待*/
-                    selector.select();
+                    int n = selector.select();
+                    if (n == 0) {
+                        continue;
+                    }
 
                     /*Set中的每个key代表一个通道*/
                     Set<SelectionKey> keySet = selector.selectedKeys();
