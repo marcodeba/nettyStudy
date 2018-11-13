@@ -14,4 +14,3 @@ public class Test {
         while (Client.sendMsg(new Scanner(System.in).nextLine())) ;
     }
 }
-
