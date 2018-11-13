@@ -28,7 +28,7 @@ public class NettyClient implements Runnable {
                     .option(ChannelOption.TCP_NODELAY, true)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
+                        protected void initChannel(SocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast("frameDecoder",
                                     new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
@@ -38,7 +38,6 @@ public class NettyClient implements Runnable {
                             pipeline.addLast("handler", new MyClient());
                         }
                     });
-
             for (int i = 0; i < 10; i++) {
                 ChannelFuture f = bootstrap.connect("127.0.0.1", 6666).sync();
                 f.channel().writeAndFlush("hello service !" + Thread.currentThread().getName() + ":---->" + i);
