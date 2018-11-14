@@ -23,23 +23,24 @@ public class NettyClient implements Runnable {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(group);
-            bootstrap.channel(NioSocketChannel.class)
+            bootstrap.group(group)
+                    .channel(NioSocketChannel.class)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
                         protected void initChannel(SocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast("frameDecoder",
-                                    new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
-                            pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
-                            pipeline.addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
-                            pipeline.addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
-                            pipeline.addLast("handler", new MyClient());
+                                    new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4))
+                                    .addLast("frameEncoder", new LengthFieldPrepender(4))
+                                    .addLast("decoder", new StringDecoder(CharsetUtil.UTF_8))
+                                    .addLast("encoder", new StringEncoder(CharsetUtil.UTF_8))
+                                    .addLast("handler", new MyClient());
                         }
                     });
             for (int i = 0; i < 10; i++) {
+                // 客户端连接
                 ChannelFuture f = bootstrap.connect("127.0.0.1", 6666).sync();
+                // 发送数据
                 f.channel().writeAndFlush("hello service !" + Thread.currentThread().getName() + ":---->" + i);
                 f.channel().closeFuture().sync();
             }

@@ -10,14 +10,13 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
 
 public class NettyServer {
-
     private static final String IP = "127.0.0.1";
     private static final int port = 6666;
     private static final int BIZGROUPSIZE = Runtime.getRuntime().availableProcessors() * 2;
     private static final int BIZTHREADSIZE = 100;
 
     // EventLoopGroup：管理事件的线程组
-    // boss线程：用来接收连接
+    // boss线程：用来接收连接,做accpet()操作
     private static final EventLoopGroup bossGroup = new NioEventLoopGroup(BIZGROUPSIZE);
     // work线程：操作连接请求
     private static final EventLoopGroup workGroup = new NioEventLoopGroup(BIZTHREADSIZE);
@@ -25,9 +24,12 @@ public class NettyServer {
     public static void start() throws Exception {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossGroup, workGroup)
+                // NioServerSocketChannel是Netty的channel
                 .channel(NioServerSocketChannel.class)
+                //.handler(new TcpServerHandler())
+                // handler是处理服务端逻辑的，childHandler是连接上的处理
                 .childHandler(new ChannelInitializer<Channel>() {
-                    protected void initChannel(Channel channel) throws Exception {
+                    protected void initChannel(Channel channel) {
                         ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
                         pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
@@ -35,8 +37,8 @@ public class NettyServer {
                         pipeline.addLast(new TcpServerHandler());
                     }
                 });
+        // 服务端监听连接请求
         ChannelFuture channelFuture = serverBootstrap.bind(IP, port).sync();
-
         channelFuture.channel().closeFuture().sync();
         System.out.println("server start");
     }
