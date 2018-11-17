@@ -8,7 +8,7 @@ public class HelloWorldServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         System.out.println("server channelRead..");
         System.out.println(ctx.channel().remoteAddress() + "->Server :" + msg.toString());
-        ctx.write("server write" + msg);
+        ctx.write("server write " + msg);
         ctx.flush();
     }
 
@@ -16,5 +16,10 @@ public class HelloWorldServerHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
         ctx.close();
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("channel active");
     }
 }

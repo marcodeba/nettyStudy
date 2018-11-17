@@ -27,6 +27,7 @@ public class HelloWorldServer {
             ServerBootstrap sbs = new ServerBootstrap().group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .localAddress(new InetSocketAddress(port))
+                    // childHandler用来处理连接的，handler用来处理服务端逻辑的
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast("decoder", new StringDecoder());
