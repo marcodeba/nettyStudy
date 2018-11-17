@@ -1,8 +1,10 @@
 package netty.mynetty;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
+@ChannelHandler.Sharable
 public class HelloWorldClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
