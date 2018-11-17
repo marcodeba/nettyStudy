@@ -8,7 +8,7 @@ public class HelloWorldServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         System.out.println("server channelRead..");
         System.out.println(ctx.channel().remoteAddress() + "->Server :" + msg.toString());
-        ctx.write("server write " + msg);
+        ctx.write("server write " + "Hello Netty Client, I am a common server");
         ctx.flush();
     }
 
