@@ -26,8 +26,9 @@ public class NettyServer {
         serverBootstrap.group(bossGroup, workGroup)
                 // NioServerSocketChannel是Netty的channel
                 .channel(NioServerSocketChannel.class)
-                //.handler(new TcpServerHandler())
-                // handler是处理服务端逻辑的，childHandler是连接上的处理
+                // handler在初始化时就会执行，而childHandler会在客户端成功connect后才执行
+                // handler对应的是bossGroup，处理连接请求
+                // childHandler对应的是workGroup，处理服务端逻辑
                 .childHandler(new ChannelInitializer<Channel>() {
                     protected void initChannel(Channel channel) {
                         ChannelPipeline pipeline = channel.pipeline();
