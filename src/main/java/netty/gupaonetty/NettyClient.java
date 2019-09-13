@@ -34,7 +34,7 @@ public class NettyClient implements Runnable {
                                     .addLast("frameEncoder", new LengthFieldPrepender(4))
                                     .addLast("decoder", new StringDecoder(CharsetUtil.UTF_8))
                                     .addLast("encoder", new StringEncoder(CharsetUtil.UTF_8))
-                                    .addLast("handler", new MyClient());
+                                    .addLast("handler", new MyClientHandler());
                         }
                     });
             for (int i = 0; i < 10; i++) {

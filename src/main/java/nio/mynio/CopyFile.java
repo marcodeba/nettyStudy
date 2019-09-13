@@ -12,26 +12,27 @@ public class CopyFile {
         String infile = ROOT_PATH + "/src/main/java/nio/mynio/CopyFile.java";
         String outfile = ROOT_PATH + "/CopyFile.txt";
 
-        FileInputStream fIn = new FileInputStream(infile);
-        FileOutputStream fOut = new FileOutputStream(outfile);
+        FileInputStream fis = new FileInputStream(infile);
+        FileOutputStream fos = new FileOutputStream(outfile);
 
-        FileChannel fcIn = fIn.getChannel();
-        FileChannel fcOut = fOut.getChannel();
+        FileChannel inChannel = fis.getChannel();
+        FileChannel outChannel = fos.getChannel();
 
         ByteBuffer buffer = ByteBuffer.allocate(1024);
 
-        int bytesRead = fcIn.read(buffer);
+        int bytesRead = inChannel.read(buffer);
         while (-1 != bytesRead) {
             buffer.flip();
             while (buffer.hasRemaining()) {
-                fcOut.write(buffer);
+                outChannel.write(buffer);
             }
             buffer.clear();
-            bytesRead = fcIn.read(buffer);
+            bytesRead = inChannel.read(buffer);
         }
-        fcIn.close();
-        fcOut.close();
-        fIn.close();
-        fOut.close();
+
+        inChannel.close();
+        outChannel.close();
+        fis.close();
+        fos.close();
     }
 }

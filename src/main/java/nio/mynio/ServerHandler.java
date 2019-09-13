@@ -85,12 +85,13 @@ public class ServerHandler implements Runnable {
             }
         }
         //selector关闭后会自动释放里面管理的资源
-        if (selector != null)
+        if (selector != null) {
             try {
                 selector.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
     }
 
     private void handleInput(SelectionKey key) throws IOException {

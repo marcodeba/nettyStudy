@@ -27,8 +27,10 @@ public class HelloWorldServer {
             ServerBootstrap sbs = new ServerBootstrap().group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .localAddress(new InetSocketAddress(port))
-                    // handler在初始化时就会执行，而childHandler会在客户端成功connect后才执行
-                    // childHandler是设置连入服务端的Client的socket处理器，handler是面向serverSocket的处理器
+                    /**
+                     * handler 字段与 accept 过程有关, 即这个 handler 负责处理客户端的连接请求;
+                     * 而 childHandler 就是负责和客户端的连接的 IO 交互
+                     */
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast("decoder", new StringDecoder());
