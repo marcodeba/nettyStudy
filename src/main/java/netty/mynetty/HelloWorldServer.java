@@ -10,10 +10,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
 public class HelloWorldServer {
+    private static final Logger logger = LoggerFactory.getLogger(HelloWorldServer.class);
     private int port;
 
     public HelloWorldServer(int port) {
@@ -41,7 +44,7 @@ public class HelloWorldServer {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             // 绑定端口，开始接收进来的连接
             ChannelFuture future = sbs.bind(port).sync();
-            System.out.println("Server start listen at " + port);
+            logger.info("Server start listen at " + port);
             // 监听关闭事件
             future.channel().closeFuture().sync();
         } catch (Exception e) {

@@ -1,5 +1,8 @@
 package nio.mynio;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -19,9 +22,12 @@ import java.util.Set;
  */
 @SuppressWarnings("Duplicates")
 public class ServerHandler implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(ServerHandler.class);
+
+    //标记服务器已开启
+    private volatile boolean started = true;
     private Selector selector;
     private ServerSocketChannel serverSocketChannel;
-    private volatile boolean started;
 
     /**
      * 注册一个Acceptor事件处理器到Reactor中，Acceptor事件处理器所关注的事件是ACCEPT事件，
@@ -40,9 +46,7 @@ public class ServerHandler implements Runnable {
             //监听客户端连接请求，将ServerSocketChannel注册到Reactor线程中的Selector上，监听ACCEPT事件
             // selector注册的单位是事件
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-            //标记服务器已开启
-            started = true;
-            System.out.println("服务器已启动，" + new InetSocketAddress(port));
+            logger.info("服务器已启动，" + new InetSocketAddress(port));
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -126,7 +130,7 @@ public class ServerHandler implements Runnable {
                     //将缓冲区可读字节数组复制到新建的数组中
                     buffer.get(bytes);
                     String expression = new String(bytes, "UTF-8");
-                    System.out.println("服务器收到消息：" + expression);
+                    logger.info("服务器收到消息：" + expression);
                     //发送应答消息
                     doWrite(sc, expression);
                 } else if (readBytes < 0) {

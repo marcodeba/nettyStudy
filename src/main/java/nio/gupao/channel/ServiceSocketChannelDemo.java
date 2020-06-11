@@ -1,6 +1,8 @@
 package nio.gupao.channel;
 
 import nio.gupao.buffer.Buffers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -15,10 +17,11 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-/*服务器端，:接收客户端发送过来的数据并显示，
+/*服务器端，接收客户端发送过来的数据并显示，
  *服务器把上接收到的数据加上"echo from service:"再发送回去*/
 @SuppressWarnings("ALL")
 public class ServiceSocketChannelDemo {
+    private static final Logger logger = LoggerFactory.getLogger(ServiceSocketChannelDemo.class);
 
     public static void main(String[] args) throws InterruptedException, IOException {
         Thread thread = new Thread(new TCPEchoServer(8080));
@@ -43,21 +46,20 @@ public class ServiceSocketChannelDemo {
             Random rnd = new Random();
 
             try {
-                /*创建选择器*/
-                selector = Selector.open();
                 /*创建服务器通道*/
                 serverSocketChannel = ServerSocketChannel.open();
                 serverSocketChannel.configureBlocking(false);
-                /*设置监听服务器的端口，设置最大连接缓冲数为100*/
                 serverSocketChannel.bind(localAddress, 100);
+                /*创建选择器*/
+                selector = Selector.open();
                 /*服务器通道只能对tcp链接事件感兴趣*/
                 serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             } catch (IOException e1) {
-                System.out.println("server start failed");
+                logger.info("server start failed");
                 return;
             }
 
-            System.out.println("server start with address : " + localAddress);
+            logger.info("server start with address : " + localAddress);
 
             /*服务器线程被中断后会退出*/
             try {
@@ -88,7 +90,7 @@ public class ServiceSocketChannelDemo {
                                 /*向选择器注册这个通道和普通通道感兴趣的事件，同时提供这个新通道相关的缓冲区*/
                                 socketChannel.register(selector, SelectionKey.OP_READ, new Buffers(256, 256));
 
-                                System.out.println("accept from " + socketChannel.getRemoteAddress());
+                                logger.info("accept from " + socketChannel.getRemoteAddress());
                             }
 
                             /*（普通）通道感兴趣读事件且有数据可读*/
@@ -105,7 +107,7 @@ public class ServiceSocketChannelDemo {
 
                                 /*解码显示，客户端发送来的信息*/
                                 CharBuffer cb = utf8.decode(readBuffer);
-                                System.out.println(cb.array());
+                                logger.info(String.valueOf(cb.array()));
 
                                 readBuffer.rewind();
 
@@ -143,7 +145,7 @@ public class ServiceSocketChannelDemo {
                                 }
                             }
                         } catch (IOException e) {
-                            System.out.println("service encounter client error");
+                            logger.info("service encounter client error");
                             /*若客户端连接出现异常，从Seletcor中移除这个key*/
                             key.cancel();
                             key.channel().close();
@@ -152,16 +154,25 @@ public class ServiceSocketChannelDemo {
                     Thread.sleep(rnd.nextInt(500));
                 }
             } catch (InterruptedException e) {
-                System.out.println("serverThread is interrupted");
+                logger.info("serverThread is interrupted");
             } catch (IOException e1) {
-                System.out.println("serverThread selecotr error");
+                logger.info("serverThread selecotr error");
             } finally {
-                try {
-                    selector.close();
-                } catch (IOException e) {
-                    System.out.println("selector close failed");
-                } finally {
-                    System.out.println("server close");
+                if (selector != null) {
+                    try {
+                        selector.close();
+                        selector = null;
+                    } catch (IOException e) {
+                        logger.info("selector close failed");
+                    }
+                }
+                if (serverSocketChannel != null) {
+                    try {
+                        serverSocketChannel.close();
+                        serverSocketChannel = null;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

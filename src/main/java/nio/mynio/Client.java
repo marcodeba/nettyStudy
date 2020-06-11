@@ -1,7 +1,7 @@
 package nio.mynio;
 
 public class Client {
-    private static String DEFAULT_HOST = "127.0.0.1";
+    private static String DEFAULT_HOST = "localhost";
     private static int DEFAULT_PORT = 12345;
     private static ClientHandler clientHandler;
 

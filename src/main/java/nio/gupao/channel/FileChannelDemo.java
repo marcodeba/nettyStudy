@@ -13,11 +13,12 @@ import java.nio.file.Paths;
 
 @SuppressWarnings("Since15")
 public class FileChannelDemo {
+    private static String outfile = System.getProperty("user.dir") + "/noi_utf8.data";
     public static void main(String[] args) {
         /*创建文件，向文件中写入数据*/
         try {
             /*如果文件不存在，创建该文件,文件后缀是不是文本文件不重要*/
-            File file = new File("f:/noi_utf8.data");
+            File file = new File(outfile);
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -54,7 +55,7 @@ public class FileChannelDemo {
         /*从刚才的文件中读取字符序列*/
         try {
             /*通过Path对象创建文件通道*/
-            Path path = Paths.get("f:/noi_utf8.data");
+            Path path = Paths.get(outfile);
             FileChannel fc = FileChannel.open(path);
             ByteBuffer bb = ByteBuffer.allocate((int) fc.size() + 1);
             Charset utf8 = Charset.forName("UTF-8");

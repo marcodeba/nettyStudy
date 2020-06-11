@@ -1,10 +1,14 @@
 package bio.mybio;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
 public class ClientInputThread implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(ClientInputThread.class);
     private Socket socket;
 
     public ClientInputThread(Socket socket) {
@@ -19,7 +23,7 @@ public class ClientInputThread implements Runnable {
                 byte[] buffer = new byte[1024];
                 int length = is.read(buffer);
                 String str = new String(buffer, 0, length);
-                System.out.println(str);
+                logger.info(str);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -24,6 +24,8 @@ public class NettyClient implements Runnable {
         try {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
+                    // NioSocketChannel代表异步的客户端 TCP Socket 连接
+                    // channel设置所需要的 Channel 的类型
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .handler(new ChannelInitializer<SocketChannel>() {
@@ -37,9 +39,9 @@ public class NettyClient implements Runnable {
                                     .addLast("handler", new MyClientHandler());
                         }
                     });
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 1; i++) {
                 // 客户端连接
-                ChannelFuture f = bootstrap.connect("127.0.0.1", 6666).sync();
+                ChannelFuture f = bootstrap.connect("localhost", 6666).sync();
                 // 发送数据
                 f.channel().writeAndFlush("hello service !" + Thread.currentThread().getName() + ":---->" + i);
                 f.channel().closeFuture().sync();

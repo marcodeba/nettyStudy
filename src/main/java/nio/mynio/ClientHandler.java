@@ -1,5 +1,8 @@
 package nio.mynio;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -11,6 +14,7 @@ import java.util.Set;
 
 @SuppressWarnings("ALL")
 public class ClientHandler implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(ClientHandler.class);
     private String host;
     private int port;
     private Selector selector;
@@ -112,7 +116,7 @@ public class ClientHandler implements Runnable {
                     //将缓冲区可读字节数组复制到新建的数组中
                     buffer.get(bytes);
                     String result = new String(bytes, "UTF-8");
-                    System.out.println("客户端收到消息：" + result);
+                    logger.info("客户端收到消息：" + result);
                 } else if (readBytes < 0) {
                     //链路已经关闭，释放资源
                     key.cancel();

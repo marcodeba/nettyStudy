@@ -2,6 +2,8 @@ package nio.gupao.channel;
 
 
 import nio.gupao.buffer.Buffers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -17,9 +19,9 @@ import java.util.Set;
 
 /*客户端:客户端每隔1~2秒自动向服务器发送数据，接收服务器接收到数据并显示*/
 public class ClientSocketChannelDemo {
+    private static final Logger logger = LoggerFactory.getLogger(ClientSocketChannelDemo.class);
 
     public static void main(String[] args) throws InterruptedException {
-
         InetSocketAddress remoteAddress = new InetSocketAddress("127.0.0.1", 8080);
 
         Thread ta = new Thread(new TCPEchoClient("thread a", remoteAddress));
@@ -74,9 +76,9 @@ public class ClientSocketChannelDemo {
                 while (!sc.finishConnect()) {
                     ;
                 }
-                System.out.println(name + " " + "finished connection");
+                logger.info(name + " " + "finished connection");
             } catch (IOException e) {
-                System.out.println("client connect failed");
+                logger.info("client connect failed");
                 return;
             }
 
@@ -106,17 +108,17 @@ public class ClientSocketChannelDemo {
                         ByteBuffer writeBuffer = buffers.gerWriteBuffer();
 
                         /*通过SelectionKey获取通道对应的缓冲区*/
-                        SocketChannel sc = (SocketChannel) key.channel();
+                        SocketChannel socketChannel = (SocketChannel) key.channel();
 
                         /*表示底层socket的读缓冲区有数据可读*/
                         if (key.isReadable()) {
                             /*从socket的读缓冲区读取到程序定义的缓冲区中*/
-                            sc.read(readBuffer);
+                            socketChannel.read(readBuffer);
                             readBuffer.flip();
                             /*字节到utf8解码*/
                             CharBuffer cb = utf8.decode(readBuffer);
                             /*显示接收到由服务器发送的信息*/
-                            System.out.println(cb.array());
+                            logger.info(String.valueOf(cb.array()));
                             readBuffer.clear();
                         }
 
@@ -125,7 +127,7 @@ public class ClientSocketChannelDemo {
                             writeBuffer.put((name + "  " + i).getBytes("UTF-8"));
                             writeBuffer.flip();
                             /*将程序定义的缓冲区中的内容写入到socket的写缓冲区中*/
-                            sc.write(writeBuffer);
+                            socketChannel.write(writeBuffer);
                             writeBuffer.clear();
                             i++;
                         }
@@ -134,16 +136,16 @@ public class ClientSocketChannelDemo {
                     Thread.sleep(1000 + rnd.nextInt(1000));
                 }
             } catch (InterruptedException e) {
-                System.out.println(name + " is interrupted");
+                logger.info(name + " is interrupted");
             } catch (IOException e) {
-                System.out.println(name + " encounter a connect error");
+                logger.info(name + " encounter a connect error");
             } finally {
                 try {
                     selector.close();
                 } catch (IOException e1) {
-                    System.out.println(name + " close selector failed");
+                    logger.info(name + " close selector failed");
                 } finally {
-                    System.out.println(name + "  closed");
+                    logger.info(name + "  closed");
                 }
             }
         }

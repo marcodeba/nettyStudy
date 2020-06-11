@@ -1,5 +1,8 @@
 package bio.gupao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,7 +10,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ServerHandler implements Runnable {
-
+    private static final Logger logger = LoggerFactory.getLogger(ServerHandler.class);
     private Socket socket;
 
     public ServerHandler(Socket socket) {
@@ -28,7 +31,7 @@ public class ServerHandler implements Runnable {
             while (true) {
                 if ((expression = in.readLine()) == null) { break; }
 
-                System.out.println("Server has accept " + expression);
+                logger.info("Server has accept " + expression);
                 result = Calculate.cal(expression);
                 out.println(result);
             }

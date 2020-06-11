@@ -3,18 +3,21 @@ package netty.mynetty;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ChannelHandler.Sharable
 public class HelloWorldClientHandler extends ChannelInboundHandlerAdapter {
+    private static final Logger logger = LoggerFactory.getLogger(HelloWorldClientHandler.class);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        System.out.println("client Active");
+        logger.info("client Active");
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        System.out.println("client receive Message: " + msg);
+        logger.info("client receive Message: " + msg);
     }
 
     @Override
