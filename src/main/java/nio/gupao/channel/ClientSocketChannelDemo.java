@@ -13,6 +13,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
@@ -118,7 +119,7 @@ public class ClientSocketChannelDemo {
                             /*字节到utf8解码*/
                             CharBuffer cb = utf8.decode(readBuffer);
                             /*显示接收到由服务器发送的信息*/
-                            logger.info(String.valueOf(cb.array()));
+                            logger.info(Arrays.toString(cb.array()));
                             readBuffer.clear();
                         }
 

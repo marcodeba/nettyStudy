@@ -20,7 +20,6 @@ import java.util.Set;
  * 2. Handler：业务实现处理类
  * 3. Selector：Reactor事件派发者
  */
-@SuppressWarnings("Duplicates")
 public class ServerHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(ServerHandler.class);
 
