@@ -73,7 +73,6 @@ public class ServiceSocketChannelDemo {
                     Set<SelectionKey> keySet = selector.selectedKeys();
                     Iterator<SelectionKey> it = keySet.iterator();
                     SelectionKey key = null;
-
                     while (it.hasNext()) {
                         key = it.next();
                         /*防止下次select方法返回已处理过的通道*/

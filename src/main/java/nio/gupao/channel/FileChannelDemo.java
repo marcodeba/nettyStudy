@@ -40,16 +40,15 @@ public class FileChannelDemo {
             /*下面的代码同理*/
             bb.put("你好，世界 456".getBytes("UTF-8"));
             bb.flip();
-
             fc.write(bb);
-            bb.clear();
 
+            bb.clear();
             fos.close();
             fc.close();
         } catch (FileNotFoundException e) {
-
+            e.printStackTrace();
         } catch (IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
 
         /*从刚才的文件中读取字符序列*/
@@ -66,6 +65,7 @@ public class FileChannelDemo {
 
             CharBuffer cb = utf8.decode(bb);
             System.out.print(cb.toString());
+
             bb.clear();
             fc.close();
         } catch (IOException e) {
