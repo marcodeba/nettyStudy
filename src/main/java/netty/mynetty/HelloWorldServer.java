@@ -1,7 +1,10 @@
 package netty.mynetty;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -18,6 +21,10 @@ public class HelloWorldServer {
 
     public HelloWorldServer(int port) {
         this.port = port;
+    }
+
+    public static void main(String[] args) {
+        new HelloWorldServer(8080).start();
     }
 
     public void start() {
@@ -73,9 +80,5 @@ public class HelloWorldServer {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-    }
-
-    public static void main(String[] args) {
-        new HelloWorldServer(8080).start();
     }
 }

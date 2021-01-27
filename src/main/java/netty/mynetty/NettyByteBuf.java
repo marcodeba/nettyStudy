@@ -13,7 +13,6 @@ public class NettyByteBuf {
         // 可写的区域: [writerIndex,capacity)
         ByteBuf byteBuf = Unpooled.buffer(10);
         System.out.println("byteBuf=" + byteBuf);
-        //Netty实战聊天室系统 腾讯课堂聊天窗口就是一个聊天室 参见示例代码com.tuling.netty.chat包
 
         for (int i = 0; i < 8; i++) {
             byteBuf.writeByte(i);

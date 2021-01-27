@@ -29,7 +29,9 @@ public class ServerHandler implements Runnable {
             String result;
 
             while (true) {
-                if ((expression = in.readLine()) == null) { break; }
+                if ((expression = in.readLine()) == null) {
+                    break;
+                }
 
                 logger.info("Server has accept " + expression);
                 result = Calculate.cal(expression);

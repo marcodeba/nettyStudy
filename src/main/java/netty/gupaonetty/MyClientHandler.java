@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 @ChannelHandler.Sharable
 public class MyClientHandler extends ChannelInboundHandlerAdapter {
     private static final Logger logger = LoggerFactory.getLogger(MyClientHandler.class);
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         logger.info("client receieve message: " + msg);
